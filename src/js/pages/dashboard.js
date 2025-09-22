@@ -99,7 +99,7 @@ const Dashboard = {
             '__TYPE__',
             transactionRecord.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
         );
-        result = result.replace('__ID__', transactionRecord.id);
+        result = result.replace(/__ID__/g, transactionRecord.id);
         result = result.replace('__NAME__', transactionRecord.name);
         result = result.replace('__AMOUNT__', transactionRecord.amount);
         result = result.replace('__DATE__', transactionRecord.date);
