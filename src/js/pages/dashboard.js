@@ -2,6 +2,7 @@ import tr from './templates/tr.html';
 const Dashboard = {
     async init() {
         await this._initialData();
+        this._initialListener();
     },
     async _initialData() {
         const fetchRecords = await fetch('/data/DATA.json');
@@ -10,6 +11,20 @@ const Dashboard = {
         this._populateTransactionsRecordToTable(this._userTransactionsHistory);
         this._populateTransactionsDataToCard(this._userTransactionsHistory);
     },
+
+    _initialListener() {
+        const recordDetailModal = document.getElementById('recordDetailModal');
+        recordDetailModal.addEventListener('show.bs.modal', (event) => {
+            const modalTitle = recordDetailModal.querySelector('.modal-title');
+            modalTitle.focus();
+            const button = event.relatedTarget;
+            const dataRecord = this._userTransactionsHistory.find((item) => {
+                return item.id == button.dataset.recordId;
+            });
+            this._populateDetailTransactionToModal(dataRecord);
+        });
+    },
+
     _populateTransactionsDataToCard(transactionsHistory = null) {
         if (!(typeof transactionsHistory === 'object')) {
             throw new Error(`Parameter responseRecords should be an object.`);
@@ -51,6 +66,31 @@ const Dashboard = {
             recordBodyTable.innerHTML += this._templateBodyTable(idx, transactionsHistory[idx]);
         });
     },
+
+    _populateDetailTransactionToModal(transactionRecord) {
+        if (!(typeof transactionRecord === 'object')) {
+            throw new Error(
+                `Parameter transactionRecord should be an object. The value is ${transactionRecord}`,
+            );
+        }
+        const imgDetailRecord = document.querySelector('#recordDetailModal #imgDetailRecord');
+        const typeDetailRecord = document.querySelector('#recordDetailModal #typeDetailRecord');
+        const nameDetailRecord = document.querySelector('#recordDetailModal #nameDetailRecord');
+        const dateDetailRecord = document.querySelector('#recordDetailModal #dateDetailRecord');
+        const amountDetailRecord = document.querySelector('#recordDetailModal #amountDetailRecord');
+        const descriptionDetailRecord = document.querySelector(
+            '#recordDetailModal #noteDetailRecord',
+        );
+        imgDetailRecord.setAttribute('src', transactionRecord.evidenceUrl);
+        imgDetailRecord.setAttribute('alt', transactionRecord.name);
+        typeDetailRecord.textContent =
+            transactionRecord.type === 'income' ? 'Pemasukan' : 'Pengeluaran';
+        nameDetailRecord.textContent = transactionRecord.name;
+        dateDetailRecord.textContent = transactionRecord.date;
+        amountDetailRecord.textContent = transactionRecord.amount;
+        descriptionDetailRecord.textContent = transactionRecord.description || '-';
+    },
+
     _templateBodyTable(index, transactionRecord) {
         // Menggunakan metode replace untuk mengganti placeholder
         let result = tr;
@@ -65,29 +105,6 @@ const Dashboard = {
         result = result.replace('__DATE__', transactionRecord.date);
 
         return result;
-
-        //     return `
-        //   <tr>
-        //     <th class="text-center">${parseInt(index, 10) + 1}</th>
-        //     <td>${transactionRecord.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</td>
-        //     <td>${transactionRecord.name}</td>
-        //     <td class="text-end">${transactionRecord.amount}</td>
-        //     <td class="text-center">${transactionRecord.date}</td>
-        //     <td>
-        //       <div class="d-flex justify-content-center align-items-center gap-2">
-        //         <a class="btn btn-sm btn-primary" href="#">
-        //           <i class="bi bi-eye-fill me-1"></i>Show
-        //         </a>
-        //         <a class="btn btn-sm btn-warning" href="#">
-        //           <i class="bi bi-pen-fill me-1"></i>Edit
-        //         </a>
-        //         <a class="btn btn-sm btn-danger" href="#">
-        //           <i class="bi bi-trash3-fill me-1"></i>Delete
-        //         </a>
-        //       </div>
-        //     </td>
-        //   </tr>
-        // `;
     },
     _templateEmptyBodyTable() {
         const recordHeadTable = document.querySelector('#recordsTable thead');
