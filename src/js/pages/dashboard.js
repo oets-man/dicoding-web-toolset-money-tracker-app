@@ -41,9 +41,11 @@ const Dashboard = {
                 amountExpense += item.amount;
             }
         });
-        document.querySelector('#numberOfTransactions').innerText = transactionsHistory.length;
-        document.querySelector('#amountIncome').innerText = amountIncome;
-        document.querySelector('#amountExpense').innerText = amountExpense;
+        document
+            .querySelector('#transactions-card')
+            .setAttribute('content', `${transactionsHistory.length} Transaksi`);
+        document.querySelector('#income-card').setAttribute('content', `Rp ${amountIncome}`);
+        document.querySelector('#expense-card').setAttribute('content', `Rp ${amountExpense}`);
     },
     _populateTransactionsRecordToTable(transactionsHistory = null) {
         if (!(typeof transactionsHistory === 'object')) {

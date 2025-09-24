@@ -1,5 +1,9 @@
 // Import our custom CSS
 import '../scss/main.scss';
+
+// Import components
+import './components/index';
+
 // Import javascript file as needed
 import Dashboard from './pages/dashboard';
 import Add from './pages/transactions/add';
