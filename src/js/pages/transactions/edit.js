@@ -2,6 +2,30 @@ const Edit = {
     async init() {
         await this._initialData();
         this._initialListener();
+        this._initialUI();
+    },
+    _initialUI() {
+        const listInputRadioTransactionType = [
+            {
+                inputId: 'recordType1',
+                value: 'income',
+                caption: 'Pemasukan',
+                required: true,
+            },
+            {
+                inputId: 'recordType2',
+                value: 'expense',
+                caption: 'Pengeluaran',
+                required: true,
+            },
+        ];
+        const inputRadioTransactionTypeEdit = document.querySelector(
+            '#inputRadioTransactionTypeEdit',
+        );
+        inputRadioTransactionTypeEdit.setAttribute(
+            'listRadio',
+            JSON.stringify(listInputRadioTransactionType),
+        );
     },
     async _initialData() {
         const transactionId = Number(this._getTransactionId());
@@ -16,10 +40,6 @@ const Edit = {
         this._populateTransactionToForm(dataRecord);
     },
     _initialListener() {
-        const evidenceInput = document.querySelector('#validationCustomEvidence');
-        evidenceInput.addEventListener('change', () => {
-            this._updatePhotoPreview();
-        });
         const editRecordForm = document.querySelector('#editRecordForm');
         editRecordForm.addEventListener(
             'submit',
@@ -55,20 +75,7 @@ const Edit = {
             type: typeInput.value,
         };
     },
-    _updatePhotoPreview() {
-        const evidenceImg = document.querySelector('#validationCustomEvidenceImg');
-        const evidenceImgChange = document.querySelector('#validationCustomEvidenceImgChange');
-        const evidenceImgInput = document.querySelector('#validationCustomEvidence');
-        const photo = evidenceImgInput.files[0];
-        if (!photo) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            evidenceImg.classList.add('d-none');
-            evidenceImgChange.classList.remove('d-none');
-            evidenceImgChange.style.backgroundImage = `url('${event.target.result}')`;
-        };
-        reader.readAsDataURL(photo);
-    },
+
     _populateTransactionToForm(transactionRecord = null) {
         if (!(typeof transactionRecord === 'object')) {
             throw new Error(
@@ -78,18 +85,39 @@ const Edit = {
         const nameInput = document.querySelector('#validationCustomRecordName');
         const amountInput = document.querySelector('#validationCustomAmount');
         const dateInput = document.querySelector('#validationCustomDate');
-        const evidenceInput = document.querySelector('#validationCustomEvidenceImg');
+
+        const inputImagePreviewEdit = document.querySelector('#inputImagePreviewEdit');
         const descriptionInput = document.querySelector('#validationCustomNotes');
-        const types = document.querySelectorAll('input[name="recordType"]');
+
+        const inputRadioTransactionTypeEdit = document.querySelector(
+            '#inputRadioTransactionTypeEdit',
+        );
         nameInput.value = transactionRecord.name;
         amountInput.value = transactionRecord.amount;
         dateInput.value = transactionRecord.date;
-        evidenceInput.setAttribute('src', transactionRecord.evidenceUrl);
-        evidenceInput.setAttribute('alt', transactionRecord.name);
+
+        inputImagePreviewEdit.setAttribute('defaultImage', transactionRecord.evidenceUrl);
+        inputImagePreviewEdit.setAttribute('defaultImageAlt', transactionRecord.name);
+
         descriptionInput.value = transactionRecord.description;
-        types.forEach((item) => {
+
+        // TODO: Fix radio button selection
+        // get attributes listRadio from input-radio-with-validation element
+        const listInputRadioTransactionType = JSON.parse(
+            inputRadioTransactionTypeEdit.getAttribute('listradio'),
+        );
+        console.log(
+            '🚀 ~ _populateTransactionToForm ~ listInputRadioTransactionType:',
+            listInputRadioTransactionType,
+        );
+        listInputRadioTransactionType.forEach((item) => {
+            console.log(item.value, transactionRecord.type);
             item.checked = item.value === transactionRecord.type;
         });
+        inputRadioTransactionTypeEdit.setAttribute(
+            'listRadio',
+            JSON.stringify(listInputRadioTransactionType),
+        );
     },
     _validateFormData(formData) {
         delete formData.evidence;
