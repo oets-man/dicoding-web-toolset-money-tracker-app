@@ -12,10 +12,6 @@ const htmlWebpackPluginConfig = {
     },
     templateParameters: {
         brandName: 'Money Tracker App',
-        // Read the HTML file content as a string using Node.js's fs module
-        navLinks: fs.readFileSync(path.resolve(__dirname, 'src/views/nav-links.html'), 'utf-8'),
-        footerContent:
-            '<p class="text-center text-white mb-0">Made with ❤ by Dicoding Indonesia</p>',
     },
 };
 

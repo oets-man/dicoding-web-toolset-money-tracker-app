@@ -10,26 +10,7 @@
 
     <body>
         <header>
-            <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-                <div class="container">
-                    <span class="navbar-brand"><%= brandName %></span>
-                    <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <%= navLinks %>
-                    </div>
-                </div>
-            </nav>
+            <nav-app brandName="<%= brandName %>"></nav-app>
         </header>
 
         <main>
@@ -157,7 +138,9 @@
 
         <footer>
             <div class="main-footer bg-dark">
-                <div class="container px-3 py-4"><%= footerContent %></div>
+                <div class="container px-3 py-4">
+                    <footer-app></footer-app>
+                </div>
             </div>
         </footer>
     </body>

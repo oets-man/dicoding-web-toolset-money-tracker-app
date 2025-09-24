@@ -7,27 +7,7 @@
     </head>
     <body>
         <header>
-            <nav class="navbar navbar-expand-md navbar-dark bg-primary">
-                <div class="container">
-                    <span class="navbar-brand"><%= brandName %></span>
-
-                    <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <%= navLinks %>
-                    </div>
-                </div>
-            </nav>
+            <nav-app brandName="<%= brandName %>"></nav-app>
         </header>
 
         <main>
@@ -65,13 +45,13 @@
                     <!-- Records -->
                     <div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <h1>Riwayat Transaksi</h1>
-                            <a
-                                class="btn btn-primary text-capitalize"
-                                href="/transactions/add.html"
-                            >
-                                <i class="bi bi-plus-lg me-1"></i>Tambah Transaksi
-                            </a>
+                            <h2>Riwayat Transaksi</h2>
+                            <button-link
+                                classes="btn-primary text-capitalize"
+                                to="/transactions/add.html"
+                                icon="bi-plus-lg"
+                                content="Tambah Transaksi"
+                            ></button-link>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -94,79 +74,19 @@
                 </div>
             </div>
         </main>
-
+        <footer>
+            <div class="main-footer bg-dark">
+                <div class="container px-3 py-4"><footer-app></footer-app></div>
+            </div>
+        </footer>
         <!-- Transaction Detail Modal -->
-        <div
+        <modal-transaction
+            title="Rincian Transaksi"
             class="modal fade"
             id="recordDetailModal"
             data-bs-backdrop="static"
             data-bs-keyboard="false"
             tabindex="-1"
-        >
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Rincian Transaksi</h1>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <img
-                                src=""
-                                id="imgDetailRecord"
-                                class="img-fluid"
-                                alt="Evidence of transaction"
-                            />
-                        </div>
-                        <h2>Rincian Transaksi</h2>
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <td class="fw-bold">Tipe</td>
-                                    <td class="fw-bold ms-3 me-1 d-inline-block">:</td>
-                                    <td id="typeDetailRecord"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Nama</td>
-                                    <td class="fw-bold ms-3 me-1 d-inline-block">:</td>
-                                    <td id="nameDetailRecord"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Tanggal</td>
-                                    <td class="fw-bold ms-3 me-1 d-inline-block">:</td>
-                                    <td id="dateDetailRecord"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Jumlah Uang</td>
-                                    <td class="fw-bold ms-3 me-1 d-inline-block">:</td>
-                                    <td id="amountDetailRecord"></td>
-                                </tr>
-                                <tr>
-                                    <td class="fw-bold">Catatan</td>
-                                    <td class="fw-bold ms-3 me-1 d-inline-block">:</td>
-                                    <td id="noteDetailRecord"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Tutup
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            <div class="main-footer bg-dark">
-                <div class="container px-3 py-4"><%= footerContent %></div>
-            </div>
-        </footer>
+        ></modal-transaction>
     </body>
 </html>
