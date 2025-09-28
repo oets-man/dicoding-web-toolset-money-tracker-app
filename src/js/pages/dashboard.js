@@ -1,3 +1,4 @@
+import Transactions from '../network/transactions';
 import CheckUserAuth from './auth/check-user-auth';
 import tr from './templates/tr.html';
 const Dashboard = {
@@ -7,11 +8,15 @@ const Dashboard = {
         this._initialListener();
     },
     async _initialData() {
-        const fetchRecords = await fetch('/data/DATA.json');
-        const responseRecords = await fetchRecords.json();
-        this._userTransactionsHistory = responseRecords.results.transactionsHistory;
-        this._populateTransactionsRecordToTable(this._userTransactionsHistory);
-        this._populateTransactionsDataToCard(this._userTransactionsHistory);
+        try {
+            const response = await Transactions.getAll();
+            const responseRecords = response.data.results;
+            this._userTransactionsHistory = responseRecords.transactionsHistory;
+            this._populateTransactionsRecordToTable(this._userTransactionsHistory);
+            this._populateTransactionsDataToCard(this._userTransactionsHistory);
+        } catch (error) {
+            console.error(error);
+        }
     },
 
     _initialListener() {
@@ -24,6 +29,22 @@ const Dashboard = {
                 return item.id == button.dataset.recordId;
             });
             this._populateDetailTransactionToModal(dataRecord);
+        });
+
+        const deleteRecordBtns = document.querySelectorAll('#recordsTable tbody a[id^="delete"]');
+        deleteRecordBtns.forEach((item) => {
+            item.addEventListener('click', async (event) => {
+                event.preventDefault();
+                const recordId = event.target.dataset.recordId;
+                try {
+                    const response = await Transactions.destroy(recordId);
+                    window.alert('Transaction has been destroyed');
+                    window.location.href = '/';
+                } catch (error) {
+                    console.error(error);
+                }
+                this._initialData();
+            });
         });
     },
 
