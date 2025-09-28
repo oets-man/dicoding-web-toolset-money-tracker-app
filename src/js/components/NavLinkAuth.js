@@ -29,10 +29,17 @@ class NavLinkAuth extends LitWithoutShadowDom {
                 </a>
 
                 <ul class="dropdown-menu">
-                    <a class="dropdown-item" id="userLogOut"> ${msg(`Keluar`)} </a>
+                    <a class="dropdown-item" id="userLogOut" @click=${this._userLogOut}>
+                        ${msg(`Keluar`)}
+                    </a>
                 </ul>
             </li>
         `;
+    }
+    _userLogOut(event) {
+        event.preventDefault();
+        Utils.destroyUserToken(Config.USER_TOKEN_KEY);
+        CheckUserAuth.checkLoginState();
     }
 }
 customElements.define('nav-link-auth', NavLinkAuth);

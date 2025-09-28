@@ -1,6 +1,8 @@
+import CheckUserAuth from './auth/check-user-auth';
 import tr from './templates/tr.html';
 const Dashboard = {
     async init() {
+        CheckUserAuth.checkLoginState();
         await this._initialData();
         this._initialListener();
     },

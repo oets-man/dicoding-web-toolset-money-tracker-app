@@ -1,5 +1,8 @@
+import CheckUserAuth from '../auth/check-user-auth';
+
 const Edit = {
     async init() {
+        CheckUserAuth.checkLoginState();
         await this._initialData();
         this._initialListener();
         this._initialUI();
