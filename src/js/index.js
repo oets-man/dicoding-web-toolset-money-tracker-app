@@ -32,9 +32,9 @@ const initPages = () => {
     }
 };
 window.addEventListener('DOMContentLoaded', async () => {
-    CheckUserAuth.checkLoginState();
-
     initPages();
-    const route = detectRoute();
-    route.init();
+    CheckUserAuth.checkLoginState(async () => {
+        const route = detectRoute();
+        await route.init();
+    });
 });

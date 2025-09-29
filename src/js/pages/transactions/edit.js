@@ -37,8 +37,8 @@ const Edit = {
         }
         try {
             const response = await Transactions.getById(transactionId);
-            const responseRecords = response.data.results;
-            this._populateTransactionToForm(responseRecords);
+            // console.log('🚀 ~ _initialData ~ response:', response);
+            this._populateTransactionToForm(response);
         } catch (error) {
             console.error(error);
         }
@@ -59,12 +59,14 @@ const Edit = {
     async _sendPost() {
         const formData = this._getFormData();
         if (this._validateFormData({ ...formData })) {
-            console.log('formData');
-            console.log(formData);
+            console.log('formData', formData);
             try {
+                if (!formData.evidence) {
+                    delete formData.evidence;
+                }
                 const response = await Transactions.update({
-                    id: this._getTransactionId(),
                     ...formData,
+                    id: this._getTransactionId(),
                 });
                 window.alert(`Transaction with id ${this._getTransactionId()} has been edited`);
                 this._goToDashboardPage();
@@ -96,36 +98,32 @@ const Edit = {
                 `Parameter transactionRecord should be an object. The value is ${transactionRecord}`,
             );
         }
+
         const nameInput = document.querySelector('#validationCustomRecordName');
         const amountInput = document.querySelector('#validationCustomAmount');
         const dateInput = document.querySelector('#validationCustomDate');
 
         const inputImagePreviewEdit = document.querySelector('#inputImagePreviewEdit');
+
         const descriptionInput = document.querySelector('#validationCustomNotes');
 
         const inputRadioTransactionTypeEdit = document.querySelector(
             '#inputRadioTransactionTypeEdit',
         );
+
         nameInput.value = transactionRecord.name;
         amountInput.value = transactionRecord.amount;
-        dateInput.value = transactionRecord.date.slice(0, 16);
+        dateInput.value = transactionRecord.date.toDate().toISOString().slice(0, 16);
 
         inputImagePreviewEdit.setAttribute('defaultImage', transactionRecord.evidenceUrl);
         inputImagePreviewEdit.setAttribute('defaultImageAlt', transactionRecord.name);
 
         descriptionInput.value = transactionRecord.description;
 
-        // TODO: Fix radio button selection
-        // get attributes listRadio from input-radio-with-validation element
         const listInputRadioTransactionType = JSON.parse(
-            inputRadioTransactionTypeEdit.getAttribute('listradio'),
-        );
-        console.log(
-            '🚀 ~ _populateTransactionToForm ~ listInputRadioTransactionType:',
-            listInputRadioTransactionType,
+            inputRadioTransactionTypeEdit.getAttribute('listRadio'),
         );
         listInputRadioTransactionType.forEach((item) => {
-            console.log(item.value, transactionRecord.type);
             item.checked = item.value === transactionRecord.type;
         });
         inputRadioTransactionTypeEdit.setAttribute(

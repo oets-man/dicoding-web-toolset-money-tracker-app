@@ -1,5 +1,4 @@
 import Transactions from '../network/transactions';
-import tr from './templates/tr.html';
 const Dashboard = {
     async init() {
         await this._initialData();
@@ -7,9 +6,7 @@ const Dashboard = {
     },
     async _initialData() {
         try {
-            const response = await Transactions.getAll();
-            const responseRecords = response.data.results;
-            this._userTransactionsHistory = responseRecords.transactionsHistory;
+            this._userTransactionsHistory = await Transactions.getAll();
             this._populateTransactionsRecordToTable(this._userTransactionsHistory);
             this._populateTransactionsDataToCard(this._userTransactionsHistory);
         } catch (error) {
@@ -115,19 +112,32 @@ const Dashboard = {
     },
 
     _templateBodyTable(index, transactionRecord) {
-        // Menggunakan metode replace untuk mengganti placeholder
-        let result = tr;
-        result = result.replace('__INDEX__', parseInt(index, 10) + 1);
-        result = result.replace(
-            '__TYPE__',
-            transactionRecord.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
-        );
-        result = result.replace(/__ID__/g, transactionRecord.id);
-        result = result.replace('__NAME__', transactionRecord.name);
-        result = result.replace('__AMOUNT__', transactionRecord.amount);
-        result = result.replace('__DATE__', transactionRecord.date);
-
-        return result;
+        return `
+      <tr>
+        <th class="text-center">${parseInt(index, 10) + 1}</th>
+        <td>${transactionRecord.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}</td>
+        <td>${transactionRecord.name}</td>
+        <td>${transactionRecord.amount}</td>
+        <td>${transactionRecord.date.toDate().toDateString()}</td>
+        <td>
+          <div class="d-flex justify-content-center align-items-center gap-2">
+            <a class="btn btn-sm btn-primary" href="#"
+               data-bs-toggle="modal" data-bs-target="#recordDetailModal" 
+               data-record-id="${transactionRecord.id}">
+              <i class="bi bi-eye-fill me-1"></i>Show
+            </a>
+            <a class="btn btn-sm btn-warning" href="/transactions/edit.html?id=${
+                transactionRecord.id
+            }">
+              <i class="bi bi-pen-fill me-1"></i>Edit
+            </a>
+            <a class="btn btn-sm btn-danger" href="#">
+              <i class="bi bi-trash3-fill me-1"></i>Delete
+            </a>
+          </div>
+        </td>
+      </tr>
+    `;
     },
     _templateEmptyBodyTable() {
         const recordHeadTable = document.querySelector('#recordsTable thead');
