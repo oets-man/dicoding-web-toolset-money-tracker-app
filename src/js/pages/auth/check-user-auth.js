@@ -1,22 +1,24 @@
-import Utils from '../../utils/utils';
-import Config from '../../config/config';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../utils/firebase';
+
 const CheckUserAuth = {
     excludeRedirectPage: ['login.html', 'register.html'],
     checkLoginState() {
-        const userToken = Utils.getUserToken(Config.USER_TOKEN_KEY);
-        const isUserSignedIn = Boolean(userToken);
         const isUserOnAuthPage = this._isUserOnAuthPage(this.excludeRedirectPage);
-        if (isUserSignedIn) {
-            if (isUserOnAuthPage) {
-                window.location.href = '/';
+        onAuthStateChanged(auth, (user) => {
+            const isUserSignedIn = Boolean(user);
+            if (isUserSignedIn) {
+                if (isUserOnAuthPage) {
+                    window.location.replace('/');
+                } else {
+                    this._showLoginMenuOrUserLogMenu(isUserSignedIn);
+                }
             } else {
-                this._showLoginMenuOrUserLogMenu(isUserSignedIn);
+                if (!isUserOnAuthPage) {
+                    window.location.replace('/auth/login.html');
+                }
             }
-        } else {
-            if (!isUserOnAuthPage) {
-                window.location.href = '/auth/login.html';
-            }
-        }
+        });
     },
     _showLoginMenuOrUserLogMenu(userLoginState) {
         const loginMenu = document.querySelector('#loginMenu');
